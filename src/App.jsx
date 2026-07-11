@@ -24,6 +24,9 @@ const App = () =>{
     
   ]);
 
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [registroAEditar, setRegistroAEditar] = useState(null);
+
   const [busqueda, setBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
 
@@ -47,7 +50,7 @@ const App = () =>{
   const indicePrimerRegistro = indiceUltimoRegistro - registrosPorPagina;
   const registrosActuales = registrosFiltrados.slice(indicePrimerRegistro, indiceUltimoRegistro);
   const totalPaginas = Math.ceil(registrosFiltrados.length / registrosPorPagina);
-  
+
   const agregarRegistro = () =>{
     if (materialRef.current.value.trim() == '' || categoriaRef.current.value.trim() == '' || cantidadRef.current.value.trim() == '' || precioRef.current.value.trim() == '' || proveedorRef.current.value.trim() == '' || estadoRef.current.value.trim() == ''){
       alert('Por favor, complete todos los campos del formulario antes de agregar un registro.');
@@ -67,20 +70,60 @@ const App = () =>{
     const precio = precioRef.current.value.trim();
     const proveedor = proveedorRef.current.value.trim();
     const estado = estadoRef.current.value.trim();
-    setRegistros((prevRegistros) =>{
-      const nuevoRegistro ={
-        id:numeroRegistros + 1,
-        nombreMaterial: material,
-        categoria: categoria,
-        cantidad: cantidad,
-        precio: precio,
-        proveedor: proveedor,
-        estado: estado
+    if (modoEdicion) {
+      setRegistros(registros.map((registro) => 
+        registro.id === registroAEditar ? {
+          ...registro,
+          nombreMaterial: material,
+          categoria: categoria,
+          cantidad: cantidad,
+          precio: precio,
+          proveedor: proveedor,
+          estado: estado
+        } : registro
+      ));
+      setModoEdicion(false);
+      setRegistroAEditar(null);  
+    } else {
+        setRegistros((prevRegistros) =>{
+          const nuevoRegistro ={
+            id:numeroRegistros + 1,
+            nombreMaterial: material,
+            categoria: categoria,
+            cantidad: cantidad,
+            precio: precio,
+            proveedor: proveedor,
+            estado: estado
+          }
+          return [...prevRegistros, nuevoRegistro]
+        });
       }
-      return [...prevRegistros, nuevoRegistro]
-    
+    materialRef.current.value = '';
+    categoriaRef.current.value = '';
+    cantidadRef.current.value = '';
+    precioRef.current.value = '';
+    proveedorRef.current.value = '';
+    estadoRef.current.value = '';
+    }
+
+  const eliminarRegistro = (id) =>{
+    setRegistros((prevRegistros) =>{
+      return prevRegistros.filter((registro) => registro.id !== id);
     })
-    materialRef.current.value = null;
+  };
+
+  const editarRegistro = (id) =>{
+    const registroAEditar = registros.find((registro) => registro.id === id);
+    if (registroAEditar) {
+      setModoEdicion(true);
+      setRegistroAEditar(registroAEditar.id);
+      materialRef.current.value = registroAEditar.nombreMaterial;
+      categoriaRef.current.value = registroAEditar.categoria;
+      cantidadRef.current.value = registroAEditar.cantidad;
+      precioRef.current.value = registroAEditar.precio;
+      proveedorRef.current.value = registroAEditar.proveedor;
+      estadoRef.current.value = registroAEditar.estado;
+    }
   };
 
 
@@ -105,7 +148,9 @@ const App = () =>{
             <div className="card-header bg-secondary text-white">
               <h5 className="mb-0 d-flex align-items-center">
                 <i className="bi bi-tools"></i>
-                <span className="flex-grow-1 text-center">Agregar instancia al inventario</span>
+                <span className="flex-grow-1 text-center">
+                  {modoEdicion ? 'Editar instancia' : 'Agregar instancia al inventario'}
+                </span>
                 <i className="bi bi-tools"></i>
               </h5>
             </div>
@@ -146,9 +191,13 @@ const App = () =>{
                     <option value='Sin stock'>Sin stock</option>
                   </select>
                 </div>
-                <button type="sumbit" className="btn btn-success w-100" onClick={agregarRegistro}>
-                  <i class="bi bi-send-plus-fill me-2"></i>
-                  Añadir al inventario
+                <button 
+                  type="button" 
+                  className={`btn w-100 ${modoEdicion ? 'btn-warning text-dark' : 'btn-success text-white'}`} 
+                  onClick={agregarRegistro}
+                >
+                  <i className={`bi me-2 ${modoEdicion ? 'bi-pencil-square' : 'bi-send-plus-fill'}`}></i>
+                  {modoEdicion ? 'Guardar edición' : 'Añadir al inventario'}
                 </button>
               </form>
             </div>
@@ -187,6 +236,7 @@ const App = () =>{
                       <th className="text-center">Precio unitario</th>
                       <th className="text-center">Proveedor</th>
                       <th className="text-center">Estado</th>
+                      <th className="text-center">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -202,7 +252,9 @@ const App = () =>{
                         registrosActuales.map((item) => (
                           <tr key={item.id}> 
                             <ListaItem 
-                              registro={item} 
+                              registro={item}
+                              eliminarRegistro={eliminarRegistro}
+                              editarRegistro={editarRegistro}
                             />
                           </tr>
                         )
@@ -237,5 +289,7 @@ const App = () =>{
     </Fragment>
   )
 }
+
+
 
 export default App;

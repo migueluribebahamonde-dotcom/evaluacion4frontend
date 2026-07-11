@@ -23,6 +23,14 @@ const ListaItem = (props) =>{
             <td>
                 {props.registro.estado}
             </td>
+            <td className="text-center">
+                <button className="btn btn-danger" onClick={() => props.eliminarRegistro(props.registro.id)}>
+                    <i className="bi bi-trash-fill"></i>
+                </button>
+                <button className="btn btn-warning" onClick={() => props.editarRegistro(props.registro.id)}>
+                    <i className="bi bi-pencil-fill"></i>
+                </button>
+            </td>
 
         </Fragment>
     );
