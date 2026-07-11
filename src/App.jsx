@@ -2,27 +2,33 @@ import { Fragment, useState, useRef } from 'react'
 import ListaItem from './ListaItem.jsx'
 
 const App = () =>{
-  const [registros, setRegistros] = useState([
-    {id: 1, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 50, precio: 10.5, proveedor: "Proveedor A", estado: "Disponible"},
-    {id: 2, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 100, precio: 5.0, proveedor: "Proveedor B", estado: "Disponible"},
-    {id: 3, nombreMaterial: "Lana de vidrio", categoria: "Aislante", cantidad: 20, precio: 15.0, proveedor: "Proveedor C", estado: "Bajo stock"},
-    {id: 4, nombreMaterial: "Tornillos", categoria: "Fijaciones", cantidad: 200, precio: 0.1, proveedor: "Proveedor D", estado: "Disponible"},
-    {id: 5, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 30, precio: 12.0, proveedor: "Proveedor A", estado: "Bajo stock"},
-    {id: 6, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 80, precio: 4.5, proveedor: "Proveedor B", estado: "Disponible"},
-    {id: 7, nombreMaterial: "Lana de vidrio", categoria: "Aislante", cantidad: 10, precio: 18.0, proveedor: "Proveedor C", estado: "Sin stock"},
-    {id: 8, nombreMaterial: "Tornillos", categoria: "Fijaciones", cantidad: 150, precio: 0.15, proveedor: "Proveedor D", estado: "Disponible"},
-    {id: 9, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 40, precio: 11.0, proveedor: "Proveedor A", estado: "Disponible"},
-    {id: 10, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 60, precio: 5.5, proveedor: "Proveedor B", estado: "Bajo stock"},
-    {id: 11, nombreMaterial: "Lana de vidrio", categoria: "Aislante", cantidad: 15, precio: 16.0, proveedor: "Proveedor C", estado: "Disponible"},
-    {id: 12, nombreMaterial: "Tornillos", categoria: "Fijaciones", cantidad: 180, precio: 0.12, proveedor: "Proveedor D", estado: "Disponible"},
-    {id: 13, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 25, precio: 13.0, proveedor: "Proveedor A", estado: "Sin stock"},
-    {id: 14, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 90, precio: 4.8, proveedor: "Proveedor B", estado: "Disponible"},
-    {id: 15, nombreMaterial: "Lana de vidrio", categoria: "Aislante", cantidad: 5, precio: 20.0, proveedor: "Proveedor C", estado: "Bajo stock"},
-    {id: 16, nombreMaterial: "Tornillos", categoria: "Fijaciones", cantidad: 220, precio: 0.08, proveedor: "Proveedor D", estado: "Disponible"},
-    {id: 17, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 35, precio: 12.5, proveedor: "Proveedor A", estado: "Disponible"},
-    {id: 18, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 70, precio: 5.2, proveedor: "Proveedor B", estado: "Bajo stock"},
+  const [registros, setRegistros] = useState(() => {
+    const datosGuardados = window.localStorage.getItem('registros');
+    if (datosGuardados) {
+      return JSON.parse(datosGuardados);
+    }
+    return [
+      {id: 1, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 50, precio: 10.5, proveedor: "Proveedor A", estado: "Disponible"},
+      {id: 2, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 100, precio: 5.0, proveedor: "Proveedor B", estado: "Disponible"},
+      {id: 3, nombreMaterial: "Lana de vidrio", categoria: "Aislante", cantidad: 20, precio: 15.0, proveedor: "Proveedor C", estado: "Bajo stock"},
+      {id: 4, nombreMaterial: "Tornillos", categoria: "Fijaciones", cantidad: 200, precio: 0.1, proveedor: "Proveedor D", estado: "Disponible"},
+      {id: 5, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 30, precio: 12.0, proveedor: "Proveedor A", estado: "Bajo stock"},
+      {id: 6, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 80, precio: 4.5, proveedor: "Proveedor B", estado: "Disponible"},
+      {id: 7, nombreMaterial: "Lana de vidrio", categoria: "Aislante", cantidad: 10, precio: 18.0, proveedor: "Proveedor C", estado: "Sin stock"},
+      {id: 8, nombreMaterial: "Tornillos", categoria: "Fijaciones", cantidad: 150, precio: 0.15, proveedor: "Proveedor D", estado: "Disponible"},
+      {id: 9, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 40, precio: 11.0, proveedor: "Proveedor A", estado: "Disponible"},
+      {id: 10, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 60, precio: 5.5, proveedor: "Proveedor B", estado: "Bajo stock"},
+      {id: 11, nombreMaterial: "Lana de vidrio", categoria: "Aislante", cantidad: 15, precio: 16.0, proveedor: "Proveedor C", estado: "Disponible"},
+      {id: 12, nombreMaterial: "Tornillos", categoria: "Fijaciones", cantidad: 180, precio: 0.12, proveedor: "Proveedor D", estado: "Disponible"},
+      {id: 13, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 25, precio: 13.0, proveedor: "Proveedor A", estado: "Sin stock"},
+      {id: 14, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 90, precio: 4.8, proveedor: "Proveedor B", estado: "Disponible"},
+      {id: 15, nombreMaterial: "Lana de vidrio", categoria: "Aislante", cantidad: 5, precio: 20.0, proveedor: "Proveedor C", estado: "Bajo stock"},
+      {id: 16, nombreMaterial: "Tornillos", categoria: "Fijaciones", cantidad: 220, precio: 0.08, proveedor: "Proveedor D", estado: "Disponible"},
+      {id: 17, nombreMaterial: "Madera de pino", categoria: "Madera", cantidad: 35, precio: 12.5, proveedor: "Proveedor A", estado: "Disponible"},
+      {id: 18, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 70, precio: 5.2, proveedor: "Proveedor B", estado: "Bajo stock"},
     
-  ]);
+  ]
+  });
 
   const [modoEdicion, setModoEdicion] = useState(false);
   const [registroAEditar, setRegistroAEditar] = useState(null);
@@ -37,6 +43,11 @@ const App = () =>{
   const precioRef = useRef();
   const proveedorRef = useRef();
   const estadoRef = useRef();
+
+  const guardarRegistros = (nuevaLista) => {
+    setRegistros(nuevaLista);
+    window.localStorage.setItem('registros', JSON.stringify(nuevaLista));
+  };
 
   const registrosFiltrados = registros.filter((registro) => {
     const textoBusqueda = busqueda.toLowerCase();
@@ -71,7 +82,7 @@ const App = () =>{
     const proveedor = proveedorRef.current.value.trim();
     const estado = estadoRef.current.value.trim();
     if (modoEdicion) {
-      setRegistros(registros.map((registro) => 
+      const listaActualizada = registros.map((registro) =>
         registro.id === registroAEditar ? {
           ...registro,
           nombreMaterial: material,
@@ -81,23 +92,23 @@ const App = () =>{
           proveedor: proveedor,
           estado: estado
         } : registro
-      ));
+      );
+      guardarRegistros(listaActualizada);
       setModoEdicion(false);
       setRegistroAEditar(null);  
     } else {
-        setRegistros((prevRegistros) =>{
-          const nuevoRegistro ={
-            id:numeroRegistros + 1,
-            nombreMaterial: material,
-            categoria: categoria,
-            cantidad: cantidad,
-            precio: precio,
-            proveedor: proveedor,
-            estado: estado
-          }
-          return [...prevRegistros, nuevoRegistro]
-        });
+      const nuevoRegistro ={
+        id:numeroRegistros + 1,
+        nombreMaterial: material,
+        categoria: categoria,
+        cantidad: cantidad,
+        precio: precio,
+        proveedor: proveedor,
+        estado: estado
       }
+      const listaActualizada = [...registros, nuevoRegistro];
+      guardarRegistros(listaActualizada);
+    }
     materialRef.current.value = '';
     categoriaRef.current.value = '';
     cantidadRef.current.value = '';
@@ -107,9 +118,8 @@ const App = () =>{
     }
 
   const eliminarRegistro = (id) =>{
-    setRegistros((prevRegistros) =>{
-      return prevRegistros.filter((registro) => registro.id !== id);
-    })
+    const listaActualizada = registros.filter((registro) => registro.id !== id);
+    guardarRegistros(listaActualizada);
   };
 
   const editarRegistro = (id) =>{
