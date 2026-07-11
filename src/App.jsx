@@ -23,6 +23,31 @@ const App = () =>{
     {id: 18, nombreMaterial: "Cemento", categoria: "Albañilería", cantidad: 70, precio: 5.2, proveedor: "Proveedor B", estado: "Bajo stock"},
     
   ]);
+
+  const [busqueda, setBusqueda] = useState('');
+  const [paginaActual, setPaginaActual] = useState(1);
+
+  //Definir referencias a los elementos del formulario
+  const materialRef = useRef();
+  const categoriaRef = useRef();
+  const cantidadRef = useRef();
+  const precioRef = useRef();
+  const proveedorRef = useRef();
+  const estadoRef = useRef();
+
+  const registrosFiltrados = registros.filter((registro) => {
+    const textoBusqueda = busqueda.toLowerCase();
+    const nombreMaterial = registro.nombreMaterial.toLowerCase();
+    const proveedor = registro.proveedor.toLowerCase();
+    return nombreMaterial.includes(textoBusqueda) || proveedor.includes(textoBusqueda);
+  });
+
+  const registrosPorPagina = 5;
+  const indiceUltimoRegistro = paginaActual * registrosPorPagina;
+  const indicePrimerRegistro = indiceUltimoRegistro - registrosPorPagina;
+  const registrosActuales = registrosFiltrados.slice(indicePrimerRegistro, indiceUltimoRegistro);
+  const totalPaginas = Math.ceil(registrosFiltrados.length / registrosPorPagina);
+  
   const agregarRegistro = () =>{
     if (materialRef.current.value.trim() == '' || categoriaRef.current.value.trim() == '' || cantidadRef.current.value.trim() == '' || precioRef.current.value.trim() == '' || proveedorRef.current.value.trim() == '' || estadoRef.current.value.trim() == ''){
       alert('Por favor, complete todos los campos del formulario antes de agregar un registro.');
@@ -58,23 +83,18 @@ const App = () =>{
     materialRef.current.value = null;
   };
 
-  //Definir referencias a los elementos del formulario
-  const materialRef = useRef();
-  const categoriaRef = useRef();
-  const cantidadRef = useRef();
-  const precioRef = useRef();
-  const proveedorRef = useRef();
-  const estadoRef = useRef();
 
-  const [paginaActual, setPaginaActual] = useState(1);
-  const registrosPorPagina = 5;
-  const indiceUltimoRegistro = paginaActual * registrosPorPagina;
-  const indicePrimerRegistro = indiceUltimoRegistro - registrosPorPagina;
-  const registrosActuales = registros.slice(indicePrimerRegistro, indiceUltimoRegistro);
-  const totalPaginas = Math.ceil(registros.length / registrosPorPagina);
+
+
+
+
+
+
+
 
   const numeroRegistros = registros.length;
 
+ 
   return(
     <Fragment>
       <h1 className="display-5">
@@ -138,7 +158,14 @@ const App = () =>{
           <div className="card shadow mb-3">
             <div className="card-body">
               <label class="form-label">Buscar en el inventario</label>
-              <input class="form-control" type="text" placeholder="Buscar por nombre del material o por proveedor..."></input>
+              <input 
+                class="form-control" 
+                type="text" placeholder="Buscar por nombre del material o por proveedor..." 
+                value={busqueda} 
+                onChange={(e) =>{
+                  setBusqueda(e.target.value); 
+                  setPaginaActual(1);}}
+              />
             </div>
           </div>
           <div className="card shadow-sm">
